@@ -86,5 +86,36 @@ namespace PhiloAlterEgo.Commands
 
             await ctx.Channel.SendMessageAsync($"> Guild **{guildName}, {result.Id}** was deleted!").ConfigureAwait(false);
         }
+
+        [Command("getkingdoms")]
+        [RequireOwner]
+        [Hidden]
+        public async Task GetKingdomsAsync(CommandContext ctx, ulong guildId)
+        {
+            if (ctx.Channel.Id != 995352151738028154)
+            {
+                await ctx.Channel.SendMessageAsync($"> Wrong channel for this command!").ConfigureAwait(false);
+
+                return;
+            }
+
+            await ctx.TriggerTypingAsync().ConfigureAwait(false);
+
+            await ctx.Channel.SendMessageAsync("> Doing ...").ConfigureAwait(false);
+
+            await ctx.TriggerTypingAsync().ConfigureAwait(false);
+
+            var result = await _guildService.GetKingdoms(guildId);
+
+            if (result == null)
+            {
+                await ctx.Channel.SendMessageAsync($"> No kingdoms linked yet to the Guild with Id **{guildId}**!!").ConfigureAwait(false);
+
+                return;
+            }
+
+            await ctx.Channel.SendMessageAsync($"> To the guild linked **{result}** Kingdoms").ConfigureAwait(false);
+        }
+
     }
 }

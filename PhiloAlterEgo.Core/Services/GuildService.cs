@@ -14,7 +14,7 @@ namespace PhiloAlterEgo.Core.Services
         Task<Guild> Get(ulong guildId);
         Task<Guild> Create(ulong guildId, string guildName);
         Task<Guild> Delete(ulong guildId);
-
+        Task<List<Guild>> GetKingdoms(ulong guildId);
     }
 
     public class GuildService : IGuildService
@@ -34,6 +34,7 @@ namespace PhiloAlterEgo.Core.Services
 
             return guild;
         }
+
         public async Task<Guild> Create(ulong guildId, string guildName)
         {
             using var context = new DataContext(_options);
@@ -51,6 +52,7 @@ namespace PhiloAlterEgo.Core.Services
 
             return guild;
         }
+
         public async Task<Guild> Delete(ulong guildId)
         {
             using var context = new DataContext(_options);
@@ -65,6 +67,18 @@ namespace PhiloAlterEgo.Core.Services
             await context.SaveChangesAsync().ConfigureAwait(false);
 
             return guild;
+        }
+
+        public async Task<List<Guild>> GetKingdoms(ulong guildId)
+        {
+            using var context = new DataContext(_options);
+
+            var guilds = await context.Guilds
+                .Include(k => k.Kingdoms)
+                .Where(g => g.Id == guildId)
+                .ToListAsync();
+
+            return guilds;
         }
     }
 }
